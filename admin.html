@@ -1,128 +1,136 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html><html lang="id">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>System Panel</title><style>
+<title>Admin Panel</title><style>
 body{
-background:#000;
-color:white;
-font-family:monospace;
-text-align:center;
-margin:0;
+  margin:0;
+  background:#000;
+  color:white;
+  font-family:monospace;
+  text-align:center;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
 }
 
 .header{
-display:flex;
-justify-content:space-between;
-padding:15px;
-border-bottom:1px solid #444;
+  display:flex;
+  justify-content:space-between;
+  padding:15px;
+  border-bottom:1px solid #444;
 }
 
 .box{
-border:2px solid #888;
-margin:15px auto;
-padding:15px;
-border-radius:10px;
-width:90%;
-max-width:400px;
+  border:2px solid #888;
+  margin:15px auto;
+  padding:15px;
+  border-radius:10px;
+  width:90%;
+  max-width:400px;
+  background: rgba(255,255,255,0.03);
 }
 
 img{
-width:100%;
-margin-top:10px;
+  width:100%;
+  margin-top:10px;
+  border-radius:10px;
 }
 
 button{
-margin-top:10px;
-padding:10px;
-width:100%;
-background:#111;
-border:1px solid #888;
-color:white;
+  margin-top:10px;
+  padding:10px;
+  width:100%;
+  background:#111;
+  border:1px solid #888;
+  color:white;
+  cursor:pointer;
+}
+
+button:active{
+  transform:scale(0.95);
 }
 </style></head><body><script>
-if(localStorage.getItem("adminLogin")!=="true"){
-location.href="login.html";
+/* PROTECT ADMIN */
+if(localStorage.getItem("adminLogin") !== "true"){
+  location.href = "login.html";
 }
 </script><div class="header">
-<div onclick="logout()">✕</div>
-<div>ADMIN PANEL</div>
-<div></div>
-</div><h3>AKUN HB</h3>
-<div id="akunList"></div><h3>PAYMENT</h3>
+  <div onclick="logout()">✕</div>
+  <div>ADMIN PANEL</div>
+  <div></div>
+</div><h3>Akun HB</h3>
+<div id="akunList"></div><h3>Payment</h3>
 <div id="paymentList"></div><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-const app = initializeApp({
-apiKey:"AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
-projectId:"berkoar-6fc3a"
+const firebaseConfig = {
+  apiKey:"AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
+  authDomain:"berkoar-6fc3a.firebaseapp.com",
+  projectId:"berkoar-6fc3a"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* REALTIME AKUN */
+onSnapshot(collection(db,"akun"), (snap)=>{
+  let container = document.getElementById("akunList");
+  container.innerHTML = "";
+
+  snap.forEach(d=>{
+    let a = d.data();
+
+    let div = document.createElement("div");
+    div.className = "box";
+
+    div.innerHTML = `
+      <p>${a.id} (${a.server})</p>
+      <img src="${a.foto}">
+      <button onclick="hapusAkun('${d.id}')">Hapus</button>
+    `;
+
+    container.appendChild(div);
+  });
 });
 
-const db=getFirestore(app);
+/* REALTIME PAYMENT */
+onSnapshot(collection(db,"payment"), (snap)=>{
+  let container = document.getElementById("paymentList");
+  container.innerHTML = "";
 
-/* LOAD AKUN */
-async function loadAkun(){
-let snap=await getDocs(collection(db,"akun"));
-let container=document.getElementById("akunList");
-container.innerHTML="";
+  snap.forEach(d=>{
+    let p = d.data();
 
-snap.forEach(d=>{
-let a=d.data();
+    let div = document.createElement("div");
+    div.className = "box";
 
-let div=document.createElement("div");
-div.className="box";
+    div.innerHTML = `
+      <p>${p.nomor}</p>
+      <button onclick="hapusPayment('${d.id}')">Hapus</button>
+    `;
 
-div.innerHTML=`
-<p>${a.id} (${a.server})</p>
-<img src="${a.foto}">
-<button onclick="hapusAkun('${d.id}')">Hapus</button>
-`;
-
-container.appendChild(div);
+    container.appendChild(div);
+  });
 });
+
+/* HAPUS */
+window.hapusAkun = async function(id){
+  await deleteDoc(doc(db,"akun",id));
 }
 
-/* HAPUS AKUN */
-window.hapusAkun=async(id)=>{
-await deleteDoc(doc(db,"akun",id));
-loadAkun();
-}
-
-/* LOAD PAYMENT */
-async function loadPayment(){
-let snap=await getDocs(collection(db,"payment"));
-let container=document.getElementById("paymentList");
-container.innerHTML="";
-
-snap.forEach(d=>{
-let p=d.data();
-
-let div=document.createElement("div");
-div.className="box";
-
-div.innerHTML=`
-<p>${p.nomor}</p>
-<button onclick="hapusPayment('${d.id}')">Hapus</button>
-`;
-
-container.appendChild(div);
-});
-}
-
-/* HAPUS PAYMENT */
-window.hapusPayment=async(id)=>{
-await deleteDoc(doc(db,"payment",id));
-loadPayment();
+window.hapusPayment = async function(id){
+  await deleteDoc(doc(db,"payment",id));
 }
 
 /* LOGOUT */
-window.logout=()=>{
-localStorage.removeItem("adminLogin");
-location.href="index.html";
+window.logout = function(){
+  localStorage.removeItem("adminLogin");
+  location.href = "index.html";
 }
-
-loadAkun();
-loadPayment();
-
 </script></body>
 </html>
