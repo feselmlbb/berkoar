@@ -1,27 +1,126 @@
-<script type="module">
+<!DOCTYPE html><html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akun HB</title><style>
+body {
+  margin: 0;
+  background: #000;
+  font-family: monospace;
+  color: white;
+  animation: fadeIn 0.6s ease;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+h2 {
+  margin-top: 50px;
+}
+
+.box {
+  border: 2px solid #888;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 15px auto;
+  width: 80%;
+  max-width: 400px;
+  background: rgba(255,255,255,0.03);
+  transition: all 0.25s ease;
+}
+
+.box:hover {
+  transform: translateY(-3px);
+  background: rgba(255,255,255,0.08);
+}
+
+img {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
+.close {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  border: 2px solid #888;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.search {
+  width: 80%;
+  max-width: 400px;
+  padding: 12px;
+  margin-top: 15px;
+  background: #000;
+  border: 1px solid #555;
+  color: white;
+}
+</style></head><body><div class="close" onclick="kembali()">✕</div><h2>Akun HB</h2><input class="search" type="text" id="search" placeholder="Cari..." onkeyup="cari()"><div id="listAkun"></div><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-const app = initializeApp({
-apiKey:"AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
-projectId:"berkoar-6fc3a"
-});
+const firebaseConfig = {
+  apiKey: "AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
+  authDomain: "berkoar-6fc3a.firebaseapp.com",
+  projectId: "berkoar-6fc3a"
+};
 
-const db=getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-let list=document.getElementById("listAkun");
+let semua = [];
+let list = document.getElementById("listAkun");
 
 async function load(){
-let snap=await getDocs(collection(db,"akun"));
-list.innerHTML="";
-snap.forEach(d=>{
-let a=d.data();
-let div=document.createElement("div");
-div.className="box";
-div.innerHTML=`<p>${a.id} (${a.server})</p><img src="${a.foto}">`;
-list.appendChild(div);
-});
+  const snap = await getDocs(collection(db,"akun"));
+  semua = [];
+
+  snap.forEach(doc=>{
+    semua.push(doc.data());
+  });
+
+  tampil(semua);
+}
+
+function tampil(data){
+  list.innerHTML = "";
+
+  data.reverse().forEach(a=>{
+    let div = document.createElement("div");
+    div.className = "box";
+
+    div.innerHTML = `
+      <p>${a.id} (${a.server})</p>
+      <img src="${a.foto}">
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+window.cari = function(){
+  let k = document.getElementById("search").value.toLowerCase();
+
+  let hasil = semua.filter(a =>
+    a.id.toLowerCase().includes(k) ||
+    a.server.toLowerCase().includes(k) ||
+    a.kode.toLowerCase().includes(k)
+  );
+
+  tampil(hasil);
+}
+
+window.kembali = function(){
+  window.location.href = "index.html";
 }
 
 load();
-</script>
+</script></body>
+</html>
