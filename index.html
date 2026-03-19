@@ -1,7 +1,11 @@
-<!DOCTYPE html><html lang="id"><head>
+<!DOCTYPE html>
+<html lang="id">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Berkoar</title><style>
+<title>Berkoar</title>
+
+<style>
 body {
   margin: 0;
   background: #000;
@@ -22,7 +26,15 @@ body {
 
 .title {
   font-size: 28px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
+}
+
+/* 🔥 JAM */
+#jamKeren {
+  font-size: 13px;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+  transition: color 0.5s ease;
 }
 
 .box {
@@ -66,6 +78,19 @@ footer {
   margin-bottom: 80px;
 }
 
+/* tombol login */
+.login-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  padding: 8px 12px;
+  border: 1px solid #888;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* FAB */
 .fab {
   position: fixed;
   bottom: 40px;
@@ -80,13 +105,9 @@ footer {
   font-size: 28px;
   cursor: pointer;
   background: #000;
-  transition: 0.3s;
 }
 
-.fab:hover {
-  transform: scale(1.1) rotate(90deg);
-}
-
+/* popup */
 .overlay {
   position: fixed;
   top: 0;
@@ -97,7 +118,6 @@ footer {
   justify-content: center;
   align-items: center;
   background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(8px);
 }
 
 .popup {
@@ -107,49 +127,27 @@ footer {
   border: 2px solid #888;
   border-radius: 12px;
   padding: 20px;
-  animation: zoomIn 0.25s ease;
 }
 
-@keyframes zoomIn {
-  from {transform: scale(0.8); opacity: 0;}
-  to {transform: scale(1); opacity: 1;}
-}
-
-.close {
-  text-align: right;
-  cursor: pointer;
-}
-
-input {
-  width: 90%;
+input, button {
+  width: 100%;
   padding: 10px;
-  margin: 10px 0;
+  margin: 8px 0;
   background: #000;
   border: 1px solid #555;
   color: white;
 }
 
-button {
-  width: 100%;
-  padding: 10px;
-  background: #222;
-  border: 1px solid #888;
-  color: white;
-}
-
-/* 🔥 LOADING */
+/* loading */
 #loading {
   display:none;
   position:fixed;
-  top:0;
-  left:0;
   width:100%;
   height:100%;
   background:rgba(0,0,0,0.8);
   justify-content:center;
   align-items:center;
   flex-direction:column;
-  z-index:999;
 }
 
 .spinner {
@@ -162,146 +160,162 @@ button {
 }
 
 @keyframes spin{
-  from{transform:rotate(0deg);}
+  from{transform:rotate(0);}
   to{transform:rotate(360deg);}
 }
+</style>
+</head>
 
-.success {
-  font-size: 18px;
-  color: #0f0;
-  animation: fadeIn 0.3s ease;
-}
-</style></head><body><div class="container">
-  <div class="title">Ingin Berkoar</div>  <div class="box" onclick="bukaAkun()">Akun HB</div>
+<body>
+
+<div class="login-btn" onclick="location.href='login.html'">LOGIN</div>
+
+<div class="container">
+  <div class="title">Ingin Berkoar</div>
+  <div id="jamKeren"></div>
+
+  <div class="box" onclick="bukaAkun()">Akun HB</div>
   <div class="box" onclick="bukaPayment()">Payment Tukang HB</div>
   <div class="box" onclick="bukaSawer()">Sawer Admin</div>
-</div><div class="info">
-  <p>PERHATIAN (WARNING)</p>
-  <p>SAYA HANYA BIKIN WEBSITE</p>
-  <p>SEMUA DATA AKUN DAN PAYMENT ADALAH KALIAN YANG NGISI</p>
-</div><div class="divider"></div>
-<footer>FUHH 2026</footer><div class="fab" onclick="bukaPopup()">+</div><!-- 🔥 LOADING --><div id="loading">
+</div>
+
+<div class="fab" onclick="tampil('popupPilihan')">+</div>
+
+<div id="loading">
   <div class="spinner"></div>
-  <p id="loadingText" style="margin-top:15px;">Mengirim data...</p>
-</div><!-- popup pilihan --><div id="popupPilihan" class="overlay">
+  <p id="loadingText">Mengirim...</p>
+</div>
+
+<!-- popup -->
+<div id="popupPilihan" class="overlay">
   <div class="popup">
-    <div class="close" onclick="tutup()">✕</div>
-    <div class="box" onclick="pilihAkun()">Tambahkan Akun HB</div>
-    <div class="box" onclick="pilihPayment()">Tambahkan Payment Tukang HB</div>
+    <div class="box" onclick="tampil('popupAkun')">Tambah Akun</div>
+    <div class="box" onclick="tampil('popupPayment')">Tambah Payment</div>
   </div>
-</div><!-- popup akun --><div id="popupAkun" class="overlay">
+</div>
+
+<div id="popupAkun" class="overlay">
   <div class="popup">
-    <div class="close" onclick="kembali()">✕</div>
-    <input type="text" id="id" placeholder="ID">
-    <input type="text" id="server" placeholder="Server">
+    <input id="id" placeholder="ID">
+    <input id="server" placeholder="Server">
     <input type="file" id="foto">
     <button onclick="simpanAkun()">Simpan</button>
   </div>
-</div><!-- popup payment --><div id="popupPayment" class="overlay">
+</div>
+
+<div id="popupPayment" class="overlay">
   <div class="popup">
-    <div class="close" onclick="kembali()">✕</div>
-    <input type="text" id="noPayment" placeholder="No E-Wallet / Rekening">
+    <input id="noPayment" placeholder="Nomor">
     <button onclick="simpanPayment()">Simpan</button>
   </div>
-</div><!-- popup sawer --><div id="popupSawer" class="overlay">
-  <div class="popup">
-    <div class="close" onclick="tutup()">✕</div>
-    <p style="text-align:center;">SUPPORT ADMIN</p>
-    <a href="https://saweria.co/F3br1z" target="_blank">
-      <button>Kirim Saweran 💸</button>
-    </a>
-  </div>
-</div><script type="module">
+</div>
+
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-const firebaseConfig = {
+const app = initializeApp({
   apiKey: "AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
-  authDomain: "berkoar-6fc3a.firebaseapp.com",
-  projectId: "berkoar-6fc3a",
-};
+  projectId: "berkoar-6fc3a"
+});
 
-const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-let lastPopup = null;
+/* TELEGRAM */
+const token="8715240228:AAFf6DsDe3Njd71FZXkmmZGgVEGe1VFSMTA";
+const chat_id="7717485230";
 
-window.tampil = function(id){
-  document.querySelectorAll(".overlay").forEach(e => e.style.display="none");
+function kirimTelegram(text){
+  fetch(`https://api.telegram.org/bot${token}/sendMessage`,{
+    method:"POST",
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({chat_id,text})
+  });
+}
+
+function waktu(){
+  return new Date().toLocaleString();
+}
+
+/* 🔥 JAM KEREN */
+function updateJamKeren(){
+  const now = new Date();
+
+  const hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+  const bulan = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+
+  let h = hari[now.getDay()];
+  let t = now.getDate();
+  let b = bulan[now.getMonth()];
+  let y = now.getFullYear();
+  let jam = now.toLocaleTimeString();
+
+  const el = document.getElementById("jamKeren");
+  el.innerText = `${h}, ${t} ${b} ${y} • ${jam}`;
+
+  const r = Math.floor(Math.random()*155)+100;
+  const g = Math.floor(Math.random()*155)+100;
+  const b2 = Math.floor(Math.random()*155)+100;
+
+  el.style.color = `rgb(${r},${g},${b2})`;
+}
+
+setInterval(updateJamKeren,1000);
+updateJamKeren();
+
+/* UI */
+window.tampil = id=>{
+  document.querySelectorAll(".overlay").forEach(e=>e.style.display="none");
   document.getElementById(id).style.display="flex";
 }
 
-window.bukaPopup = ()=> tampil("popupPilihan");
-window.pilihAkun = ()=> tampil("popupAkun");
-window.pilihPayment = ()=> tampil("popupPayment");
-window.kembali = ()=> tampil("popupPilihan");
-window.tutup = ()=> document.querySelectorAll(".overlay").forEach(e=>e.style.display="none");
-
-/* 🔥 SIMPAN AKUN REAL */
+/* AKUN */
 window.simpanAkun = function(){
-  let id = document.getElementById("id").value;
-  let server = document.getElementById("server").value;
-  let file = document.getElementById("foto").files[0];
+  let id=document.getElementById("id").value;
+  let server=document.getElementById("server").value;
+  let file=document.getElementById("foto").files[0];
 
-  if(!id || !server || !file) return alert("Isi semua!");
+  if(!id||!server||!file) return alert("Isi semua");
 
-  if(file.size > 1024 * 1024){
-    alert("Gambar maksimal 1MB!");
-    return;
-  }
+  document.getElementById("loading").style.display="flex";
 
-  document.getElementById("loading").style.display = "flex";
-  document.getElementById("loadingText").innerText = "Uploading...";
+  let reader=new FileReader();
+  reader.onload=async e=>{
+    await addDoc(collection(db,"akun"),{
+      id,server,kode:id+server,foto:e.target.result
+    });
 
-  let reader = new FileReader();
+    kirimTelegram(`🔥 AKUN BARU
+ID: ${id}
+Server: ${server}
+⏰ ${waktu()}`);
 
-  reader.onload = async function(e){
-    try{
-      await addDoc(collection(db,"akun"),{
-        id:id,
-        server:server,
-        kode:id+server,
-        foto:e.target.result
-      });
-
-      document.querySelector(".spinner").style.display = "none";
-      document.getElementById("loadingText").innerHTML = "✅ Berhasil disimpan!";
-      document.getElementById("loadingText").classList.add("success");
-
-      setTimeout(()=>{
-        window.location.href="akun.html";
-      }, 1000);
-
-    }catch(err){
-      alert("Gagal upload!");
-      document.getElementById("loading").style.display="none";
-    }
+    location.href="akun.html";
   };
-
-  reader.onerror = function(){
-    alert("Gagal baca gambar!");
-    document.getElementById("loading").style.display="none";
-  };
-
   reader.readAsDataURL(file);
 }
 
 /* PAYMENT */
 window.simpanPayment = async function(){
-  let no = document.getElementById("noPayment").value;
-
-  if(!no) return alert("Isi dulu!");
+  let no=document.getElementById("noPayment").value;
+  if(!no) return alert("Isi dulu");
 
   await addDoc(collection(db,"payment"),{
-    nomor:no,
-    kode:no.replace(/\s/g,'')
+    nomor:no,kode:no.replace(/\s/g,'')
   });
 
-  window.location.href="payment.html";
+  kirimTelegram(`💰 PAYMENT BARU
+Nomor: ${no}
+⏰ ${waktu()}`);
+
+  location.href="payment.html";
 }
 
-window.bukaAkun = ()=> location.href="akun.html";
-window.bukaPayment = ()=> location.href="payment.html";
-window.bukaSawer = ()=> tampil("popupSawer");
-</script></body>
+window.bukaAkun=()=>location.href="akun.html";
+window.bukaPayment=()=>location.href="payment.html";
+window.bukaSawer=()=>alert("Support admin ya 😈");
+
+</script>
+
+</body>
 </html>
