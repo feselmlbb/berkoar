@@ -77,17 +77,6 @@ footer {
   margin-bottom: 80px;
 }
 
-.login-btn {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  padding: 8px 12px;
-  border: 1px solid #888;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
 .fab {
   position: fixed;
   bottom: 40px;
@@ -114,6 +103,7 @@ footer {
 }
 
 .popup {
+  position: relative;
   width:85%;
   max-width:320px;
   background:#111;
@@ -160,8 +150,6 @@ input, button {
 
 <body>
 
-<div class="login-btn" onclick="location.href='login.html'">LOGIN</div>
-
 <div class="container">
   <div class="title">Ingin Berkoar</div>
   <div id="jamKeren"></div>
@@ -171,7 +159,6 @@ input, button {
   <div class="box" onclick="tampil('popupSawer')">Sawer Admin</div>
 </div>
 
-<!-- INFO BALIK -->
 <div class="info">
   <p>PERHATIAN (WARNING)</p>
   <p>SAYA HANYA BIKIN WEBSITE</p>
@@ -185,19 +172,22 @@ input, button {
 
 <div id="loading">
   <div class="spinner"></div>
-  <p id="loadingText">Mengirim...</p>
+  <p>Mengirim...</p>
 </div>
 
-<!-- popup -->
+<!-- popup pilihan -->
 <div id="popupPilihan" class="overlay">
   <div class="popup">
+    <span onclick="tutup()" style="float:right;cursor:pointer;">✖</span>
     <div class="box" onclick="tampil('popupAkun')">Tambah Akun</div>
     <div class="box" onclick="tampil('popupPayment')">Tambah Payment</div>
   </div>
 </div>
 
+<!-- popup akun -->
 <div id="popupAkun" class="overlay">
   <div class="popup">
+    <span onclick="tutup()" style="float:right;cursor:pointer;">✖</span>
     <input id="id" placeholder="ID">
     <input id="server" placeholder="Server">
     <input type="file" id="foto">
@@ -205,15 +195,19 @@ input, button {
   </div>
 </div>
 
+<!-- popup payment -->
 <div id="popupPayment" class="overlay">
   <div class="popup">
+    <span onclick="tutup()" style="float:right;cursor:pointer;">✖</span>
     <input id="noPayment" placeholder="Nomor">
     <button onclick="simpanPayment()">Simpan</button>
   </div>
 </div>
 
+<!-- popup sawer -->
 <div id="popupSawer" class="overlay">
   <div class="popup">
+    <span onclick="tutup()" style="float:right;cursor:pointer;">✖</span>
     <p style="text-align:center;">Support Admin 💸</p>
     <a href="https://saweria.co/F3br1z" target="_blank">
       <button>Kirim Saweran</button>
@@ -232,9 +226,11 @@ const app = initializeApp({
 
 const db = getFirestore(app);
 
-/* telegram */
 const token="8715240228:AAFf6DsDe3Njd71FZXkmmZGgVEGe1VFSMTA";
 const chat_id="7717485230";
+
+
+const linkAdmin="https://feselmlbb.github.io/berkoar/login.html";
 
 function kirimTelegram(text){
   fetch(`https://api.telegram.org/bot${token}/sendMessage`,{
@@ -248,33 +244,34 @@ function waktu(){
   return new Date().toLocaleString();
 }
 
-/* jam */
 function updateJamKeren(){
   const now = new Date();
+  const el = document.getElementById("jamKeren");
 
   const r = Math.floor(Math.random()*155)+100;
   const g = Math.floor(Math.random()*155)+100;
   const b = Math.floor(Math.random()*155)+100;
 
-  const el = document.getElementById("jamKeren");
   el.innerText = now.toLocaleString();
   el.style.color = `rgb(${r},${g},${b})`;
 }
-
 setInterval(updateJamKeren,1000);
 updateJamKeren();
 
-/* UI */
-window.tampil = id=>{
+window.tampil=id=>{
   document.querySelectorAll(".overlay").forEach(e=>e.style.display="none");
   document.getElementById(id).style.display="flex";
 }
 
+window.tutup=()=>{
+  document.querySelectorAll(".overlay").forEach(e=>e.style.display="none");
+}
+
 /* akun */
 window.simpanAkun = function(){
-  let id=document.getElementById("id").value;
-  let server=document.getElementById("server").value;
-  let file=document.getElementById("foto").files[0];
+  let id=idInput.value;
+  let server=serverInput.value;
+  let file=foto.files[0];
 
   if(!id||!server||!file) return tampil('popupAkun');
 
@@ -286,7 +283,16 @@ window.simpanAkun = function(){
       id,server,kode:id+server,foto:e.target.result
     });
 
-    kirimTelegram(`🔥 AKUN BARU\nID:${id}\nServer:${server}\n${waktu()}`);
+    kirimTelegram(
+`🔥 AKUN BARU
+ID: ${id}
+Server: ${server}
+⏰ ${waktu()}
+
+🔑 Admin:
+${linkAdmin}`
+    );
+
     location.href="akun.html";
   };
   reader.readAsDataURL(file);
@@ -294,14 +300,22 @@ window.simpanAkun = function(){
 
 /* payment */
 window.simpanPayment = async function(){
-  let no=document.getElementById("noPayment").value;
+  let no=noPayment.value;
   if(!no) return tampil('popupPayment');
 
   await addDoc(collection(db,"payment"),{
     nomor:no,kode:no.replace(/\s/g,'')
   });
 
-  kirimTelegram(`💰 PAYMENT BARU\nNomor:${no}\n${waktu()}`);
+  kirimTelegram(
+`💰 PAYMENT BARU
+Nomor: ${no}
+⏰ ${waktu()}
+
+🔑 Admin:
+${linkAdmin}`
+  );
+
   location.href="payment.html";
 }
 
