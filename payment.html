@@ -1,27 +1,123 @@
-<script type="module">
+<!DOCTYPE html><html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment HB</title><style>
+body {
+  margin: 0;
+  background: #000;
+  font-family: monospace;
+  color: white;
+  animation: fadeIn 0.6s ease;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+h2 {
+  margin-top: 50px;
+}
+
+.box {
+  border: 2px solid #888;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 15px auto;
+  width: 80%;
+  max-width: 400px;
+  background: rgba(255,255,255,0.03);
+  transition: all 0.25s ease;
+}
+
+.box:hover {
+  transform: translateY(-3px);
+  background: rgba(255,255,255,0.08);
+}
+
+.close {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  border: 2px solid #888;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.search {
+  width: 80%;
+  max-width: 400px;
+  padding: 12px;
+  margin-top: 15px;
+  background: #000;
+  border: 1px solid #555;
+  color: white;
+}
+</style></head><body><div class="close" onclick="kembali()">✕</div><h2>Payment Tukang HB</h2><input class="search" type="text" id="search" placeholder="Cari..." onkeyup="cari()"><div id="listPayment"></div><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-const app = initializeApp({
-apiKey:"AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
-projectId:"berkoar-6fc3a"
-});
+const firebaseConfig = {
+  apiKey: "AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
+  authDomain: "berkoar-6fc3a.firebaseapp.com",
+  projectId: "berkoar-6fc3a"
+};
 
-const db=getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-let list=document.getElementById("listPayment");
+let semua = [];
+let list = document.getElementById("listPayment");
 
+/* LOAD DATA */
 async function load(){
-let snap=await getDocs(collection(db,"payment"));
-list.innerHTML="";
-snap.forEach(d=>{
-let p=d.data();
-let div=document.createElement("div");
-div.className="box";
-div.innerHTML=`<p>${p.nomor}</p>`;
-list.appendChild(div);
-});
+  const snap = await getDocs(collection(db,"payment"));
+  semua = [];
+
+  snap.forEach(doc=>{
+    semua.push(doc.data());
+  });
+
+  tampil(semua);
 }
 
+/* TAMPIL */
+function tampil(data){
+  list.innerHTML = "";
+
+  data.reverse().forEach(p=>{
+    let div = document.createElement("div");
+    div.className = "box";
+
+    div.innerHTML = `
+      <p>${p.nomor}</p>
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+/* SEARCH */
+window.cari = function(){
+  let k = document.getElementById("search").value.toLowerCase();
+
+  let hasil = semua.filter(p =>
+    p.nomor.toLowerCase().includes(k) ||
+    p.kode.toLowerCase().includes(k)
+  );
+
+  tampil(hasil);
+}
+
+/* NAV */
+window.kembali = function(){
+  window.location.href = "index.html";
+}
+
+/* INIT */
 load();
-</script>
+</script></body>
+</html>
