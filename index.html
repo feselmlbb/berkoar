@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="id">
-<head>
+<!DOCTYPE html><html lang="id"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Berkoar</title><style>
@@ -88,7 +87,6 @@ footer {
   transform: scale(1.1) rotate(90deg);
 }
 
-/* popup */
 .overlay {
   position: fixed;
   top: 0;
@@ -138,6 +136,41 @@ button {
   border: 1px solid #888;
   color: white;
 }
+
+/* 🔥 LOADING */
+#loading {
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.8);
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:999;
+}
+
+.spinner {
+  width:50px;
+  height:50px;
+  border:5px solid #555;
+  border-top:5px solid white;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  from{transform:rotate(0deg);}
+  to{transform:rotate(360deg);}
+}
+
+.success {
+  font-size: 18px;
+  color: #0f0;
+  animation: fadeIn 0.3s ease;
+}
 </style></head><body><div class="container">
   <div class="title">Ingin Berkoar</div>  <div class="box" onclick="bukaAkun()">Akun HB</div>
   <div class="box" onclick="bukaPayment()">Payment Tukang HB</div>
@@ -147,7 +180,10 @@ button {
   <p>SAYA HANYA BIKIN WEBSITE</p>
   <p>SEMUA DATA AKUN DAN PAYMENT ADALAH KALIAN YANG NGISI</p>
 </div><div class="divider"></div>
-<footer>FUHH 2026</footer><div class="fab" onclick="bukaPopup()">+</div><!-- popup pilihan --><div id="popupPilihan" class="overlay">
+<footer>FUHH 2026</footer><div class="fab" onclick="bukaPopup()">+</div><!-- 🔥 LOADING --><div id="loading">
+  <div class="spinner"></div>
+  <p id="loadingText" style="margin-top:15px;">Mengirim data...</p>
+</div><!-- popup pilihan --><div id="popupPilihan" class="overlay">
   <div class="popup">
     <div class="close" onclick="tutup()">✕</div>
     <div class="box" onclick="pilihAkun()">Tambahkan Akun HB</div>
@@ -184,9 +220,6 @@ const firebaseConfig = {
   apiKey: "AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
   authDomain: "berkoar-6fc3a.firebaseapp.com",
   projectId: "berkoar-6fc3a",
-  storageBucket: "berkoar-6fc3a.appspot.com",
-  messagingSenderId: "801041924361",
-  appId: "1:801041924361:web:542370d79f76889c6b93d8"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -194,78 +227,82 @@ const db = getFirestore(app);
 
 let lastPopup = null;
 
-window.tampil = function(id) {
-  document.querySelectorAll(".overlay").forEach(e => e.style.display = "none");
-  document.getElementById(id).style.display = "flex";
+window.tampil = function(id){
+  document.querySelectorAll(".overlay").forEach(e => e.style.display="none");
+  document.getElementById(id).style.display="flex";
 }
 
-window.bukaPopup = function() {
-  lastPopup = null;
-  tampil("popupPilihan");
-}
+window.bukaPopup = ()=> tampil("popupPilihan");
+window.pilihAkun = ()=> tampil("popupAkun");
+window.pilihPayment = ()=> tampil("popupPayment");
+window.kembali = ()=> tampil("popupPilihan");
+window.tutup = ()=> document.querySelectorAll(".overlay").forEach(e=>e.style.display="none");
 
-window.pilihAkun = function() {
-  lastPopup = "popupPilihan";
-  tampil("popupAkun");
-}
-
-window.pilihPayment = function() {
-  lastPopup = "popupPilihan";
-  tampil("popupPayment");
-}
-
-window.kembali = function() {
-  tampil(lastPopup);
-}
-
-window.tutup = function() {
-  document.querySelectorAll(".overlay").forEach(e => e.style.display = "none");
-}
-
-window.simpanAkun = function() {
+/* 🔥 SIMPAN AKUN REAL */
+window.simpanAkun = function(){
   let id = document.getElementById("id").value;
   let server = document.getElementById("server").value;
   let file = document.getElementById("foto").files[0];
 
-  if (!id || !server || !file) return alert("Isi semua!");
+  if(!id || !server || !file) return alert("Isi semua!");
+
+  if(file.size > 1024 * 1024){
+    alert("Gambar maksimal 1MB!");
+    return;
+  }
+
+  document.getElementById("loading").style.display = "flex";
+  document.getElementById("loadingText").innerText = "Uploading...";
 
   let reader = new FileReader();
-  reader.onload = async function(e) {
-    await addDoc(collection(db,"akun"),{
-      id:id,
-      server:server,
-      kode:id+server,
-      foto:e.target.result
-    });
 
-    window.location.href = "akun.html";
+  reader.onload = async function(e){
+    try{
+      await addDoc(collection(db,"akun"),{
+        id:id,
+        server:server,
+        kode:id+server,
+        foto:e.target.result
+      });
+
+      document.querySelector(".spinner").style.display = "none";
+      document.getElementById("loadingText").innerHTML = "✅ Berhasil disimpan!";
+      document.getElementById("loadingText").classList.add("success");
+
+      setTimeout(()=>{
+        window.location.href="akun.html";
+      }, 1000);
+
+    }catch(err){
+      alert("Gagal upload!");
+      document.getElementById("loading").style.display="none";
+    }
   };
+
+  reader.onerror = function(){
+    alert("Gagal baca gambar!");
+    document.getElementById("loading").style.display="none";
+  };
+
   reader.readAsDataURL(file);
 }
 
-window.simpanPayment = async function() {
+/* PAYMENT */
+window.simpanPayment = async function(){
   let no = document.getElementById("noPayment").value;
 
-  if (!no) return alert("Isi dulu!");
+  if(!no) return alert("Isi dulu!");
 
   await addDoc(collection(db,"payment"),{
     nomor:no,
     kode:no.replace(/\s/g,'')
   });
 
-  window.location.href = "payment.html";
+  window.location.href="payment.html";
 }
 
-window.bukaAkun = function() {
-  window.location.href = "akun.html";
-}
-
-window.bukaPayment = function() {
-  window.location.href = "payment.html";
-}
-
-window.bukaSawer = function() {
-  tampil("popupSawer");
-}
+window.bukaAkun = ()=> location.href="akun.html";
+window.bukaPayment = ()=> location.href="payment.html";
+window.bukaSawer = ()=> tampil("popupSawer");
 </script></body>
 </html>
