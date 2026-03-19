@@ -1,128 +1,53 @@
 <!DOCTYPE html><html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>System Panel</title><style>
+<title>Login Admin</title><style>
 body{
-background:#000;
-color:white;
-font-family:monospace;
-text-align:center;
-margin:0;
-}
-
-.header{
-display:flex;
-justify-content:space-between;
-padding:15px;
-border-bottom:1px solid #444;
+  background:#000;
+  color:white;
+  font-family:monospace;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  margin:0;
 }
 
 .box{
-border:2px solid #888;
-margin:15px auto;
-padding:15px;
-border-radius:10px;
-width:90%;
-max-width:400px;
+  border:2px solid #888;
+  padding:20px;
+  border-radius:12px;
+  width:90%;
+  max-width:320px;
+  text-align:center;
 }
 
-img{
-width:100%;
-margin-top:10px;
+input,button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  background:#000;
+  border:1px solid #555;
+  color:white;
 }
 
-button{
-margin-top:10px;
-padding:10px;
-width:100%;
-background:#111;
-border:1px solid #888;
-color:white;
+button:active{
+  transform:scale(0.95);
 }
-</style></head><body><script>
-if(localStorage.getItem("adminLogin")!=="true"){
-location.href="login.html";
+</style></head><body><div class="box">
+  <h3>LOGIN ADMIN</h3>
+  <input type="password" id="pass" placeholder="Masukkan Password">
+  <button onclick="login()">Masuk</button>
+</div><script>
+function login(){
+  let p = document.getElementById("pass").value;
+
+  if(p === "123aja11"){
+    localStorage.setItem("adminLogin","true");
+    window.location.href = "admin.html";
+  }else{
+    alert("Password salah!");
+  }
 }
-</script><div class="header">
-<div onclick="logout()">✕</div>
-<div>ADMIN PANEL</div>
-<div></div>
-</div><h3>AKUN HB</h3>
-<div id="akunList"></div><h3>PAYMENT</h3>
-<div id="paymentList"></div><script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
-
-const app = initializeApp({
-apiKey:"AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
-projectId:"berkoar-6fc3a"
-});
-
-const db=getFirestore(app);
-
-/* LOAD AKUN */
-async function loadAkun(){
-let snap=await getDocs(collection(db,"akun"));
-let container=document.getElementById("akunList");
-container.innerHTML="";
-
-snap.forEach(d=>{
-let a=d.data();
-
-let div=document.createElement("div");
-div.className="box";
-
-div.innerHTML=`
-<p>${a.id} (${a.server})</p>
-<img src="${a.foto}">
-<button onclick="hapusAkun('${d.id}')">Hapus</button>
-`;
-
-container.appendChild(div);
-});
-}
-
-/* HAPUS AKUN */
-window.hapusAkun=async(id)=>{
-await deleteDoc(doc(db,"akun",id));
-loadAkun();
-}
-
-/* LOAD PAYMENT */
-async function loadPayment(){
-let snap=await getDocs(collection(db,"payment"));
-let container=document.getElementById("paymentList");
-container.innerHTML="";
-
-snap.forEach(d=>{
-let p=d.data();
-
-let div=document.createElement("div");
-div.className="box";
-
-div.innerHTML=`
-<p>${p.nomor}</p>
-<button onclick="hapusPayment('${d.id}')">Hapus</button>
-`;
-
-container.appendChild(div);
-});
-}
-
-/* HAPUS PAYMENT */
-window.hapusPayment=async(id)=>{
-await deleteDoc(doc(db,"payment",id));
-loadPayment();
-}
-
-/* LOGOUT */
-window.logout=()=>{
-localStorage.removeItem("adminLogin");
-location.href="index.html";
-}
-
-loadAkun();
-loadPayment();
-
 </script></body>
 </html>
