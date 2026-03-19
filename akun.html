@@ -64,7 +64,7 @@ img {
 }
 </style></head><body><div class="close" onclick="kembali()">✕</div><h2>Akun HB</h2><input class="search" type="text" id="search" placeholder="Cari..." onkeyup="cari()"><div id="listAkun"></div><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
@@ -78,8 +78,8 @@ const db = getFirestore(app);
 let semua = [];
 let list = document.getElementById("listAkun");
 
-async function load(){
-  const snap = await getDocs(collection(db,"akun"));
+/* REALTIME AKUN */
+onSnapshot(collection(db,"akun"), (snap)=>{
   semua = [];
 
   snap.forEach(doc=>{
@@ -87,12 +87,13 @@ async function load(){
   });
 
   tampil(semua);
-}
+});
 
+/* TAMPIL */
 function tampil(data){
   list.innerHTML = "";
 
-  data.reverse().forEach(a=>{
+  data.slice().reverse().forEach(a=>{
     let div = document.createElement("div");
     div.className = "box";
 
@@ -105,6 +106,7 @@ function tampil(data){
   });
 }
 
+/* SEARCH */
 window.cari = function(){
   let k = document.getElementById("search").value.toLowerCase();
 
@@ -117,10 +119,9 @@ window.cari = function(){
   tampil(hasil);
 }
 
+/* KEMBALI */
 window.kembali = function(){
   window.location.href = "index.html";
 }
-
-load();
 </script></body>
 </html>
