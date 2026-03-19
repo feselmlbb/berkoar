@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Payment HB</title>
+
+<style>
+body {
+  background:#000;
+  color:white;
+  font-family:monospace;
+  text-align:center;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {opacity:0;}
+  to {opacity:1;}
+}
+
+.box {
+  border:2px solid #888;
+  margin:15px auto;
+  padding:15px;
+  border-radius:10px;
+  width:80%;
+  max-width:400px;
+  transition:0.25s;
+  background: rgba(255,255,255,0.03);
+}
+
+.box:hover {
+  transform: translateY(-3px);
+  background: rgba(255,255,255,0.08);
+}
+
+.box:active {
+  transform: scale(0.95);
+}
+
+.close {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  border: 2px solid #888;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.search {
+  width: 80%;
+  max-width: 400px;
+  padding: 10px;
+  margin-top: 15px;
+  background: #000;
+  border: 1px solid #555;
+  color: white;
+}
+
+.empty {
+  opacity:0.5;
+  margin-top:30px;
+  font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="close" onclick="kembali()">✕</div>
+
+<h2>Payment Tukang HB</h2>
+
+<input class="search" type="text" id="search" placeholder="Cari nomor / kode..." onkeyup="cari()">
+
+<div id="listPayment"></div>
+<div id="kosong" class="empty">Belum ada data...</div>
+
+<script>
+let semua = JSON.parse(localStorage.getItem("paymentList")) || [];
+let list = document.getElementById("listPayment");
+
+function tampil(data) {
+  list.innerHTML = "";
+
+  if (data.length === 0) {
+    document.getElementById("kosong").style.display = "block";
+  } else {
+    document.getElementById("kosong").style.display = "none";
+  }
+
+  data.reverse().forEach(data => {
+    let div = document.createElement("div");
+    div.className = "box";
+    div.innerHTML = `
+      <p><b>KODE:</b> ${data.kode}</p>
+      <p>${data.nomor}</p>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function cari() {
+  let keyword = document.getElementById("search").value.toLowerCase();
+
+  let hasil = semua.filter(a =>
+    a.kode.toLowerCase().includes(keyword) ||
+    a.nomor.toLowerCase().includes(keyword)
+  );
+
+  tampil(hasil);
+}
+
+tampil(semua);
+
+function kembali() {
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

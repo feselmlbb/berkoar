@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login Admin</title>
+
+<style>
+body {
+  background:#000;
+  color:white;
+  font-family:monospace;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.box {
+  border:2px solid #888;
+  padding:20px;
+  border-radius:10px;
+  width:250px;
+  text-align:center;
+}
+
+input {
+  width:90%;
+  padding:10px;
+  margin:10px 0;
+  background:#000;
+  border:1px solid #555;
+  color:white;
+}
+
+button {
+  width:100%;
+  padding:10px;
+  background:#111;
+  border:1px solid #888;
+  color:white;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h3>Login Admin</h3>
+  <input type="password" id="pass" placeholder="Password">
+  <button onclick="login()">Masuk</button>
+</div>
+
+<script>
+function login(){
+  let pass = document.getElementById("pass").value;
+
+  if(pass === "123aja11"){
+    localStorage.setItem("adminLogin","true");
+    window.location.href = "./admin.html";
+  } else {
+    alert("Sandi salah!");
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>System</title>
+
+<style>
+body {
+  margin:0;
+  background:#000;
+  color:white;
+  font-family:monospace;
+  text-align:center;
+}
+
+.header {
+  display:flex;
+  justify-content:space-between;
+  padding:15px;
+  border-bottom:1px solid #444;
+}
+
+.close {
+  cursor:pointer;
+}
+
+.box {
+  border:2px solid #888;
+  margin:15px auto;
+  padding:15px;
+  border-radius:10px;
+  width:80%;
+  max-width:400px;
+}
+
+img {
+  width:100%;
+  margin-top:10px;
+}
+
+button {
+  margin-top:10px;
+  padding:8px;
+  background:#111;
+  color:white;
+  border:1px solid #888;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<script>
+// 🔐 LOGIN CHECK
+if(localStorage.getItem("adminLogin") !== "true"){
+  window.location.href = "./login.html";
+}
+
+let pass2 = prompt("Masukkan Sandi Admin:");
+if(pass2 !== "123aja11"){
+  alert("Sandi salah!");
+  window.location.href = "./index.html";
+}
+</script>
+
+<div class="header">
+  <div onclick="keluar()" class="close">✕</div>
+  <div>SYSTEM PANEL</div>
+  <div></div>
+</div>
+
+<h3>Akun HB</h3>
+<div id="akunList"></div>
+
+<h3>Payment Tukang HB</h3>
+<div id="paymentList"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
+  authDomain: "berkoar-6fc3a.firebaseapp.com",
+  projectId: "berkoar-6fc3a",
+  storageBucket: "berkoar-6fc3a.firebasestorage.app",
+  messagingSenderId: "801041924361",
+  appId: "1:801041924361:web:542370d79f76889c6b93d8"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* LOAD AKUN */
+async function loadAkun(){
+  const querySnapshot = await getDocs(collection(db, "akun"));
+  let container = document.getElementById("akunList");
+  container.innerHTML = "";
+
+  querySnapshot.forEach((d) => {
+    let a = d.data();
+
+    let div = document.createElement("div");
+    div.className = "box";
+
+    div.innerHTML = `
+      <p>${a.id} (${a.server})</p>
+      <img src="${a.foto}">
+      <button onclick="hapusAkun('${d.id}')">Hapus</button>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+/* HAPUS AKUN */
+window.hapusAkun = async function(id){
+  await deleteDoc(doc(db, "akun", id));
+  loadAkun();
+}
+
+/* LOAD PAYMENT */
+async function loadPayment(){
+  const querySnapshot = await getDocs(collection(db, "payment"));
+  let container = document.getElementById("paymentList");
+  container.innerHTML = "";
+
+  querySnapshot.forEach((d) => {
+    let p = d.data();
+
+    let div = document.createElement("div");
+    div.className = "box";
+
+    div.innerHTML = `
+      <p>${p.nomor}</p>
+      <button onclick="hapusPayment('${d.id}')">Hapus</button>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+/* HAPUS PAYMENT */
+window.hapusPayment = async function(id){
+  await deleteDoc(doc(db, "payment", id));
+  loadPayment();
+}
+
+/* LOGOUT */
+window.keluar = function(){
+  localStorage.removeItem("adminLogin");
+  window.location.href = "./index.html";
+}
+
+loadAkun();
+loadPayment();
+
+</script>
+
+</body>
+</html>
