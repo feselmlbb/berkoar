@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Payment HB</title><style>
+<title>Payment Tukang HB</title><style>
 body {
   margin: 0;
   background: #000;
@@ -58,7 +58,7 @@ h2 {
 }
 </style></head><body><div class="close" onclick="kembali()">✕</div><h2>Payment Tukang HB</h2><input class="search" type="text" id="search" placeholder="Cari..." onkeyup="cari()"><div id="listPayment"></div><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
@@ -72,9 +72,8 @@ const db = getFirestore(app);
 let semua = [];
 let list = document.getElementById("listPayment");
 
-/* LOAD DATA */
-async function load(){
-  const snap = await getDocs(collection(db,"payment"));
+/* REALTIME PAYMENT */
+onSnapshot(collection(db,"payment"), (snap)=>{
   semua = [];
 
   snap.forEach(doc=>{
@@ -82,13 +81,13 @@ async function load(){
   });
 
   tampil(semua);
-}
+});
 
 /* TAMPIL */
 function tampil(data){
   list.innerHTML = "";
 
-  data.reverse().forEach(p=>{
+  data.slice().reverse().forEach(p=>{
     let div = document.createElement("div");
     div.className = "box";
 
@@ -112,12 +111,9 @@ window.cari = function(){
   tampil(hasil);
 }
 
-/* NAV */
+/* KEMBALI */
 window.kembali = function(){
   window.location.href = "index.html";
 }
-
-/* INIT */
-load();
 </script></body>
 </html>
