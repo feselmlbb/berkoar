@@ -1,304 +1,88 @@
-<!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html><html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Berkoar</title>
-
-<style>
-body {
-  margin: 0;
-  background: #000;
-  font-family: monospace;
-  color: white;
-  animation: fadeIn 0.6s ease;
-}
-
-@keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
-}
-
-.container {
-  text-align: center;
-  margin-top: 60px;
-}
-
-.title {
-  font-size: 28px;
-  margin-bottom: 30px;
-}
-
-.box {
-  border: 2px solid #888;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 15px auto;
-  width: 80%;
-  max-width: 400px;
-  background: rgba(255,255,255,0.03);
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.box:hover {
-  transform: translateY(-3px);
-  background: rgba(255,255,255,0.08);
-}
-
-.box:active {
-  transform: scale(0.95);
-}
-
-.info {
-  font-size: 12px;
-  padding: 20px;
-  text-align: center;
-}
-
-.divider {
-  width: 80%;
-  height: 1px;
-  background: #444;
-  margin: 20px auto;
-}
-
-footer {
-  text-align: center;
-  font-size: 11px;
-  opacity: 0.5;
-  margin-bottom: 80px;
-}
-
-.fab {
-  position: fixed;
-  bottom: 70px;
-  right: 20px;
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  border: 2px solid #888;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 28px;
-  cursor: pointer;
-  background: #000;
-  transition: 0.3s;
-}
-
-.fab:hover {
-  transform: scale(1.1) rotate(90deg);
-}
-
-/* popup */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(8px);
-}
-
-.popup {
-  width: 85%;
-  max-width: 320px;
-  background: #111;
-  border: 2px solid #888;
-  border-radius: 12px;
-  padding: 20px;
-  animation: zoomIn 0.25s ease;
-}
-
-@keyframes zoomIn {
-  from {transform: scale(0.8); opacity: 0;}
-  to {transform: scale(1); opacity: 1;}
-}
-
-.close {
-  text-align: right;
-  cursor: pointer;
-  font-size:18px;
-}
-
-input {
-  width: 90%;
-  padding: 10px;
-  margin: 10px 0;
-  background: #000;
-  border: 1px solid #555;
-  color: white;
-}
-
-button {
-  width: 100%;
-  padding: 10px;
-  background: #222;
-  border: 1px solid #888;
-  color: white;
-  transition: 0.2s;
-}
-
-button:hover {
-  background:#333;
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-  <div class="title">Ingin Berkoar</div>
-
-  <div class="box" onclick="bukaAkun()">Akun HB</div>
-  <div class="box" onclick="bukaPayment()">Payment Tukang HB</div>
-  <div class="box" onclick="bukaSawer()">Sawer Admin</div>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Berkoar</title><style>
+body{margin:0;background:#000;color:white;font-family:monospace;text-align:center;}
+.box{border:2px solid #888;margin:15px auto;padding:15px;border-radius:10px;width:90%;max-width:400px;}
+.fab{position:fixed;bottom:20px;right:20px;width:55px;height:55px;border-radius:50%;border:2px solid #888;display:flex;align-items:center;justify-content:center;font-size:28px;}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;display:none;justify-content:center;align-items:center;background:rgba(0,0,0,0.7);}
+.popup{width:90%;max-width:320px;background:#111;border:2px solid #888;padding:20px;border-radius:10px;}
+input,button{width:100%;padding:10px;margin-top:10px;background:#000;border:1px solid #555;color:white;}
+</style></head><body><h2>Berkoar</h2><div class="box" onclick="bukaAkun()">Akun HB</div>
+<div class="box" onclick="bukaPayment()">Payment Tukang HB</div>
+<div class="box" onclick="bukaSawer()">Sawer Admin</div><div class="fab" onclick="tampil('pilih')">+</div><!-- pilihan --><div id="pilih" class="overlay">
+<div class="popup">
+<div onclick="tutup()">✕</div>
+<div class="box" onclick="tampil('akunPop')">Tambah Akun</div>
+<div class="box" onclick="tampil('payPop')">Tambah Payment</div>
 </div>
-
-<div class="info">
-  <p>WEBSITE INI DI BUAT UNTUK</p>
-  <p>MENCARI INFO DAN MENAMBAHKAN DATA AKUN/PAYMENT</p>
-  <p>DARI TUKANG HB BIAR KAPOK</p>
+</div><!-- akun --><div id="akunPop" class="overlay">
+<div class="popup">
+<div onclick="tutup()">✕</div>
+<input id="id" placeholder="ID">
+<input id="server" placeholder="Server">
+<input type="file" id="foto">
+<button onclick="simpanAkun()">Simpan</button>
 </div>
-
-<div class="divider"></div>
-<footer>FUHH 2026</footer>
-
-<div class="fab" onclick="bukaPopup()">+</div>
-
-<!-- popup pilihan -->
-<div id="popupPilihan" class="overlay">
-  <div class="popup">
-    <div class="close" onclick="tutup()">✕</div>
-    <div class="box" onclick="pilihAkun()">Tambahkan Akun HB</div>
-    <div class="box" onclick="pilihPayment()">Tambahkan Payment Tukang HB</div>
-  </div>
+</div><!-- payment --><div id="payPop" class="overlay">
+<div class="popup">
+<div onclick="tutup()">✕</div>
+<input id="no" placeholder="No Payment">
+<button onclick="simpanPayment()">Simpan</button>
 </div>
-
-<!-- popup akun -->
-<div id="popupAkun" class="overlay">
-  <div class="popup">
-    <div class="close" onclick="kembali()">✕</div>
-    <input type="text" id="id" placeholder="ID">
-    <input type="text" id="server" placeholder="Server">
-    <input type="file" id="foto">
-    <button onclick="simpanAkun()">Simpan</button>
-  </div>
+</div><!-- sawer --><div id="sawer" class="overlay">
+<div class="popup">
+<div onclick="tutup()">✕</div>
+<a href="https://saweria.co/F3br1z" target="_blank">
+<button>Kirim Saweran 💸</button>
+</a>
 </div>
+</div><script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-<!-- popup payment -->
-<div id="popupPayment" class="overlay">
-  <div class="popup">
-    <div class="close" onclick="kembali()">✕</div>
-    <input type="text" id="noPayment" placeholder="Nama & No E-Wallet / Rekening">
-    <button onclick="simpanPayment()">Simpan</button>
-  </div>
-</div>
+const app = initializeApp({
+apiKey:"AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
+authDomain:"berkoar-6fc3a.firebaseapp.com",
+projectId:"berkoar-6fc3a"
+});
 
-<!-- popup sawer -->
-<div id="popupSawer" class="overlay">
-  <div class="popup">
-    <div class="close" onclick="tutup()">✕</div>
+const db = getFirestore(app);
 
-    <p style="text-align:center;">SUPPORT ADMIN</p>
-<p style="text-align:center;">KLIK TOMBOL DI BAWAH YA GUYSS MAKASIHHH</p>
-    <a href="https://saweria.co/F3br1z" target="_blank">
-      <button style="margin-top:15px;">Kirim Saweran 💸</button>
-    </a>
+window.simpanAkun=async()=>{
+let id=document.getElementById("id").value;
+let server=document.getElementById("server").value;
+let file=document.getElementById("foto").files[0];
+if(!id||!server||!file)return alert("Isi semua");
 
-  </div>
-</div>
-
-<script>
-let lastPopup = null;
-
-function tampil(id) {
-  document.querySelectorAll(".overlay").forEach(e => e.style.display = "none");
-  document.getElementById(id).style.display = "flex";
+let r=new FileReader();
+r.onload=async e=>{
+await addDoc(collection(db,"akun"),{
+id,server,kode:id+server,foto:e.target.result
+});
+location.href="akun.html";
+};
+r.readAsDataURL(file);
 }
 
-function bukaPopup() {
-  lastPopup = null;
-  tampil("popupPilihan");
+window.simpanPayment=async()=>{
+let no=document.getElementById("no").value;
+if(!no)return alert("Isi dulu");
+await addDoc(collection(db,"payment"),{
+nomor:no,kode:no.replace(/\s/g,'')
+});
+location.href="payment.html";
 }
 
-function pilihAkun() {
-  lastPopup = "popupPilihan";
-  tampil("popupAkun");
+window.tampil=id=>{
+document.querySelectorAll(".overlay").forEach(e=>e.style.display="none");
+document.getElementById(id).style.display="flex";
 }
 
-function pilihPayment() {
-  lastPopup = "popupPilihan";
-  tampil("popupPayment");
-}
-
-function kembali() {
-  tampil(lastPopup);
-}
-
-function tutup() {
-  document.querySelectorAll(".overlay").forEach(e => e.style.display = "none");
-}
-
-function bukaSawer() {
-  tampil("popupSawer");
-}
-
-function simpanAkun() {
-  let id = document.getElementById("id").value;
-  let server = document.getElementById("server").value;
-  let file = document.getElementById("foto").files[0];
-
-  if (!id || !server || !file) return alert("Isi semua!");
-
-  let reader = new FileReader();
-  reader.onload = function(e) {
-    let data = {
-      id: id,
-      server: server,
-      kode: id + server,
-      foto: e.target.result
-    };
-
-    let semua = JSON.parse(localStorage.getItem("akunList")) || [];
-    semua.push(data);
-    localStorage.setItem("akunList", JSON.stringify(semua));
-
-    window.location.href = "akun.html";
-  };
-
-  reader.readAsDataURL(file);
-}
-
-function simpanPayment() {
-  let no = document.getElementById("noPayment").value;
-
-  if (!no) return alert("Isi dulu!");
-
-  let data = {
-    nomor: no,
-    kode: no.replace(/\s/g,'')
-  };
-
-  let semua = JSON.parse(localStorage.getItem("paymentList")) || [];
-  semua.push(data);
-  localStorage.setItem("paymentList", JSON.stringify(semua));
-
-  window.location.href = "payment.html";
-}
-
-function bukaAkun() {
-  window.location.href = "akun.html";
-}
-
-function bukaPayment() {
-  window.location.href = "payment.html";
-}
-</script>
-
-</body>
+window.tutup=()=>document.querySelectorAll(".overlay").forEach(e=>e.style.display="none");
+window.bukaAkun=()=>location.href="akun.html";
+window.bukaPayment=()=>location.href="payment.html";
+window.bukaSawer=()=>tampil("sawer");
+</script></body>
 </html>
