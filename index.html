@@ -11,140 +11,52 @@ body {
   background: #000;
   font-family: monospace;
   color: white;
-  animation: fadeIn 0.6s ease;
 }
 
-@keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
-}
-
-.container {
-  text-align: center;
-  margin-top: 60px;
-}
-
-.title {
-  font-size: 28px;
-  margin-bottom: 10px;
-}
-
-#jamKeren {
-  font-size: 13px;
-  margin-bottom: 20px;
-  letter-spacing: 1px;
-  transition: color 0.5s ease;
-}
-
+.container {text-align:center;margin-top:60px;}
+.title {font-size:28px;}
+#jamKeren {font-size:13px;margin:10px;}
 .box {
-  border: 2px solid #888;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 15px auto;
-  width: 80%;
-  max-width: 400px;
-  background: rgba(255,255,255,0.03);
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-.box:hover {
-  transform: translateY(-3px);
-  background: rgba(255,255,255,0.08);
-}
-
-.box:active {
-  transform: scale(0.95);
-}
-
-.info {
-  font-size: 12px;
-  padding: 20px;
-  text-align: center;
-}
-
-.divider {
-  width: 80%;
-  height: 1px;
-  background: #444;
-  margin: 20px auto;
-}
-
-footer {
-  text-align: center;
-  font-size: 11px;
-  opacity: 0.5;
-  margin-bottom: 80px;
-}
-
-.fab {
-  position: fixed;
-  bottom: 40px;
-  right: 20px;
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  border: 2px solid #888;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 28px;
-  cursor: pointer;
-}
-
-.overlay {
-  position: fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  display:none;
-  justify-content:center;
-  align-items:center;
-  background: rgba(0,0,0,0.7);
-}
-
-.popup {
-  position: relative;
-  width:85%;
-  max-width:320px;
-  background:#111;
   border:2px solid #888;
   border-radius:12px;
   padding:20px;
+  margin:15px auto;
+  width:80%;
+  max-width:400px;
+  cursor:pointer;
 }
-
-input, button {
-  width:100%;
-  padding:10px;
-  margin:8px 0;
-  background:#000;
-  border:1px solid #555;
-  color:white;
+.fab {
+  position:fixed;bottom:40px;right:20px;
+  width:55px;height:55px;border-radius:50%;
+  border:2px solid #888;
+  display:flex;justify-content:center;align-items:center;
+  font-size:28px;cursor:pointer;
 }
-
+.overlay {
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  display:none;justify-content:center;align-items:center;
+  background:rgba(0,0,0,0.7);
+}
+.popup {
+  width:85%;max-width:320px;
+  background:#111;border:2px solid #888;
+  border-radius:12px;padding:20px;
+}
+input,button {
+  width:100%;padding:10px;margin:8px 0;
+  background:#000;border:1px solid #555;color:white;
+}
 #loading {
-  display:none;
-  position:fixed;
-  width:100%;
-  height:100%;
+  display:none;position:fixed;width:100%;height:100%;
   background:rgba(0,0,0,0.8);
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
+  justify-content:center;align-items:center;flex-direction:column;
 }
-
 .spinner {
-  width:50px;
-  height:50px;
-  border:5px solid #555;
-  border-top:5px solid white;
-  border-radius:50%;
+  width:50px;height:50px;border:5px solid #555;
+  border-top:5px solid white;border-radius:50%;
   animation:spin 1s linear infinite;
 }
-
-@keyframes spin{
-  from{transform:rotate(0);}
-  to{transform:rotate(360deg);}
-}
+@keyframes spin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
 </style>
 </head>
 
@@ -155,18 +67,8 @@ input, button {
   <div id="jamKeren"></div>
 
   <div class="box" onclick="bukaAkun()">Akun HB</div>
-  <div class="box" onclick="bukaPayment()">Payment Tukang HB</div>
-  <div class="box" onclick="tampil('popupSawer')">Sawer Admin</div>
+  <div class="box" onclick="bukaPayment()">Payment</div>
 </div>
-
-<div class="info">
-  <p>PERHATIAN (WARNING)</p>
-  <p>SAYA HANYA BIKIN WEBSITE</p>
-  <p>SEMUA DATA AKUN DAN PAYMENT ADALAH KALIAN YANG NGISI</p>
-</div>
-
-<div class="divider"></div>
-<footer>FUHH 2026</footer>
 
 <div class="fab" onclick="tampil('popupPilihan')">+</div>
 
@@ -175,19 +77,17 @@ input, button {
   <p>Mengirim...</p>
 </div>
 
-<!-- popup pilihan -->
 <div id="popupPilihan" class="overlay">
   <div class="popup">
-    <span onclick="tutup()" style="float:right;cursor:pointer;">✖</span>
+    <span onclick="tutup()">✖</span>
     <div class="box" onclick="tampil('popupAkun')">Tambah Akun</div>
     <div class="box" onclick="tampil('popupPayment')">Tambah Payment</div>
   </div>
 </div>
 
-<!-- popup akun -->
 <div id="popupAkun" class="overlay">
   <div class="popup">
-    <span onclick="tutup()" style="float:right;cursor:pointer;">✖</span>
+    <span onclick="tutup()">✖</span>
     <input id="id" placeholder="ID">
     <input id="server" placeholder="Server">
     <input type="file" id="foto">
@@ -195,23 +95,11 @@ input, button {
   </div>
 </div>
 
-<!-- popup payment -->
 <div id="popupPayment" class="overlay">
   <div class="popup">
-    <span onclick="tutup()" style="float:right;cursor:pointer;">✖</span>
+    <span onclick="tutup()">✖</span>
     <input id="noPayment" placeholder="Nomor">
     <button onclick="simpanPayment()">Simpan</button>
-  </div>
-</div>
-
-<!-- popup sawer -->
-<div id="popupSawer" class="overlay">
-  <div class="popup">
-    <span onclick="tutup()" style="float:right;cursor:pointer;">✖</span>
-    <p style="text-align:center;">Support Admin 💸</p>
-    <a href="https://saweria.co/F3br1z" target="_blank">
-      <button>Kirim Saweran</button>
-    </a>
   </div>
 </div>
 
@@ -220,101 +108,48 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/fireba
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 const app = initializeApp({
-  apiKey: "AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
-  projectId: "berkoar-6fc3a"
+  apiKey:"AIzaSyCSDwdzrKNOhyoBHBO8aVq-FxAyZIwFdL4",
+  projectId:"berkoar-6fc3a"
 });
-
 const db = getFirestore(app);
-
-const token="8715240228:AAFf6DsDe3Njd71FZXkmmZGgVEGe1VFSMTA";
-const chat_id="7717485230";
-
-
-const linkAdmin="https://feselmlbb.github.io/berkoar/login.html";
-
-function kirimTelegram(text){
-  fetch(`https://api.telegram.org/bot${token}/sendMessage`,{
-    method:"POST",
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({chat_id,text})
-  });
-}
-
-function waktu(){
-  return new Date().toLocaleString();
-}
-
-function updateJamKeren(){
-  const now = new Date();
-  const el = document.getElementById("jamKeren");
-
-  const r = Math.floor(Math.random()*155)+100;
-  const g = Math.floor(Math.random()*155)+100;
-  const b = Math.floor(Math.random()*155)+100;
-
-  el.innerText = now.toLocaleString();
-  el.style.color = `rgb(${r},${g},${b})`;
-}
-setInterval(updateJamKeren,1000);
-updateJamKeren();
 
 window.tampil=id=>{
   document.querySelectorAll(".overlay").forEach(e=>e.style.display="none");
   document.getElementById(id).style.display="flex";
 }
-
 window.tutup=()=>{
   document.querySelectorAll(".overlay").forEach(e=>e.style.display="none");
 }
 
-/* akun */
 window.simpanAkun = function(){
-  let id=idInput.value;
-  let server=serverInput.value;
-  let file=foto.files[0];
+  let id = document.getElementById("id").value;
+  let server = document.getElementById("server").value;
+  let file = document.getElementById("foto").files[0];
 
-  if(!id||!server||!file) return tampil('popupAkun');
+  if(!id || !server || !file) return;
 
   document.getElementById("loading").style.display="flex";
 
-  let reader=new FileReader();
-  reader.onload=async e=>{
+  let reader = new FileReader();
+  reader.onload = async e=>{
     await addDoc(collection(db,"akun"),{
-      id,server,kode:id+server,foto:e.target.result
+      id, server,
+      kode:id+server,
+      foto:e.target.result
     });
-
-    kirimTelegram(
-`🔥 AKUN BARU
-ID: ${id}
-Server: ${server}
-⏰ ${waktu()}
-
-🔑 Admin:
-${linkAdmin}`
-    );
-
     location.href="akun.html";
   };
   reader.readAsDataURL(file);
 }
 
-/* payment */
 window.simpanPayment = async function(){
-  let no=noPayment.value;
-  if(!no) return tampil('popupPayment');
+  let no = document.getElementById("noPayment").value;
+  if(!no) return;
 
   await addDoc(collection(db,"payment"),{
-    nomor:no,kode:no.replace(/\s/g,'')
+    nomor:no,
+    kode:no.replace(/\s/g,'')
   });
-
-  kirimTelegram(
-`💰 PAYMENT BARU
-Nomor: ${no}
-⏰ ${waktu()}
-
-🔑 Admin:
-${linkAdmin}`
-  );
 
   location.href="payment.html";
 }
